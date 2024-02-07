@@ -11,6 +11,7 @@ import board
 import busio
 from digitalio import DigitalInOut, Direction, Pull
 from adafruit_pm25.i2c import PM25_I2C
+import pandas as pd
 
 
 reset_pin = None
@@ -47,34 +48,50 @@ pm25 = PM25_UART(uart, reset_pin)
 
 print("Found PM2.5 sensor, reading data...")
 
-while True:
-    time.sleep(1)
+# while True:
+    
 
+    # print()
+    # print("Concentration Units (standard)")
+    # print("---------------------------------------")
+    # print(
+    #     "PM 1.0: %d\tPM2.5: %d\tPM10: %d"
+    #     % (aqdata["pm10 standard"], aqdata["pm25 standard"], aqdata["pm100 standard"])
+    # )
+    # print("Concentration Units (environmental)")
+    # print("---------------------------------------")
+    # print(
+    #     "PM 1.0: %d\tPM2.5: %d\tPM10: %d"
+    #     % (aqdata["pm10 env"], aqdata["pm25 env"], aqdata["pm100 env"])
+    # )
+    # print("---------------------------------------")
+    # print("Particles > 0.3um / 0.1L air:", aqdata["particles 03um"])
+    # print("Particles > 0.5um / 0.1L air:", aqdata["particles 05um"])
+    # print("Particles > 1.0um / 0.1L air:", aqdata["particles 10um"])
+    # print("Particles > 2.5um / 0.1L air:", aqdata["particles 25um"])
+    # print("Particles > 5.0um / 0.1L air:", aqdata["particles 50um"])
+    # print("Particles > 10 um / 0.1L air:", aqdata["particles 100um"])
+    # print("---------------------------------------")
+
+
+lst = []
+
+for i in range(30):
     try:
         aqdata = pm25.read()
         # print(aqdata)
     except RuntimeError:
         print("Unable to read from sensor, retrying...")
         continue
+    sublst = []
+    sublst.append(time.time())
+    sublst.append("%0.1f" % aqdata["particles 10um"])
+    sublst.append("%d" % aqdata["particles 25um"])
+    sublst.append("%0.1f" % aqdata["particles 100um"])
+    lst.append(sublst)
+    time.sleep(1)
 
-    print()
-    print("Concentration Units (standard)")
-    print("---------------------------------------")
-    print(
-        "PM 1.0: %d\tPM2.5: %d\tPM10: %d"
-        % (aqdata["pm10 standard"], aqdata["pm25 standard"], aqdata["pm100 standard"])
-    )
-    print("Concentration Units (environmental)")
-    print("---------------------------------------")
-    print(
-        "PM 1.0: %d\tPM2.5: %d\tPM10: %d"
-        % (aqdata["pm10 env"], aqdata["pm25 env"], aqdata["pm100 env"])
-    )
-    print("---------------------------------------")
-    print("Particles > 0.3um / 0.1L air:", aqdata["particles 03um"])
-    print("Particles > 0.5um / 0.1L air:", aqdata["particles 05um"])
-    print("Particles > 1.0um / 0.1L air:", aqdata["particles 10um"])
-    print("Particles > 2.5um / 0.1L air:", aqdata["particles 25um"])
-    print("Particles > 5.0um / 0.1L air:", aqdata["particles 50um"])
-    print("Particles > 10 um / 0.1L air:", aqdata["particles 100um"])
-    print("---------------------------------------")
+
+col_names = ["Time","pm10 standard", "pm25 standard","pm100 env"]
+df = pd.DataFrame(lst, columns = col_names)
+csv_data = df.to_csv('air_data.csv', index = False)
