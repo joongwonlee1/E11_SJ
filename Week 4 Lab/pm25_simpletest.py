@@ -86,7 +86,7 @@ for i in range(30):
     sublst = []
     sublst.append(time.time())
     sublst.append("%0.1f" % aqdata["particles 10um"])
-    sublst.append("%d" % aqdata["particles 25um"])
+    sublst.append("%0.1f" % aqdata["particles 25um"])
     sublst.append("%0.1f" % aqdata["particles 100um"])
     lst.append(sublst)
     time.sleep(1)
