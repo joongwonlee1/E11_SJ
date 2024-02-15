@@ -26,6 +26,18 @@ air_data = []
 
 # Collect weather data
 for i in range(10):
+    try:
+        aqdata = pm25.read()
+    except RuntimeError:
+        print("Unable to read from sensor, retrying...")
+        continue
+    sublst1 = []
+    sublst1.append(time.time())
+    sublst1.append("%0.1f" % aqdata["particles 10um"])
+    sublst1.append("%d" % aqdata["particles 25um"])
+    sublst1.append("%0.1f" % aqdata["particles 100um"])
+    air_data.append(sublst1)
+    
     sublst = []
     sublst.append(time.time())
     sublst.append("%0.1f" % bme680.temperature)
@@ -34,21 +46,6 @@ for i in range(10):
     sublst.append("%0.3f" % bme680.pressure)
     sublst.append("%0.2f" % bme680.altitude)
     weather_data.append(sublst)
-    time.sleep(1)
-
-# Collect air quality data
-for i in range(30):
-    try:
-        aqdata = pm25.read()
-    except RuntimeError:
-        print("Unable to read from sensor, retrying...")
-        continue
-    sublst = []
-    sublst.append(time.time())
-    sublst.append("%0.1f" % aqdata["particles 10um"])
-    sublst.append("%d" % aqdata["particles 25um"])
-    sublst.append("%0.1f" % aqdata["particles 100um"])
-    air_data.append(sublst)
     time.sleep(1)
 
 # Define column names for weather and air quality data
