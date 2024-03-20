@@ -33,7 +33,7 @@ try:
     input('\nPress Enter to start recording...\n')
     start_time = time.time()
 
-    while (time.time() - start_time) < runtime:
+    while (time.time() - start_time) < runtime + count_interval:  # Extend runtime for one extra interval
         current_time = time.time()
         if current_time - last_interval_time >= count_interval:
             # Log the interval metadata
@@ -50,13 +50,14 @@ try:
 finally:
     GPIO.cleanup()  # Clean up GPIO
 
+# Remove the first entry as it's the additional one we don't need
+if lst:
+    lst.pop(0)
+
 # Writing data to CSV
 print("Writing data to CSV...")
 col_names = ["Interval Start Time", "Interval Number", "Event Count"]
 df = pd.DataFrame(lst, columns=col_names)
 
-# Formatting the "Interval Start Time" to a readable format
-df['Interval Start Time'] = pd.to_datetime(df['Interval Start Time'], unit='s')
 df.to_csv(filename + ".csv", index=False)
 print("Data written to", filename + ".csv")
-
