@@ -74,6 +74,7 @@ def collect_data():
     GPIO.cleanup()
     
     # Write data to CSV
+    ##new
     col_names = ["Time", "State"]
     df_gpio = pd.DataFrame(lst, columns=col_names)
     df_gpio.to_csv('rad_data_new.csv', index=False)
