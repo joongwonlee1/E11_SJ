@@ -5,6 +5,7 @@ import pandas as pd
 import busio
 from digitalio import DigitalInOut, Direction, Pull
 from adafruit_pm25.i2c import PM25_I2C
+import sys
 
 
 reset_pin = None
@@ -22,7 +23,12 @@ bme680.sea_level_pressure = 1013.25
 #start = time.time()
 lst = []
 
-for i in range(10):
+
+runtime = int(sys.argv[1])
+filename = sys.argv[2]
+
+for i in range(runtime):
+    time.sleep(1)
     try:
         aqdata = pm25.read()
     except RuntimeError:
@@ -39,9 +45,8 @@ for i in range(10):
     sublst.append("%d" % aqdata["particles 25um"])
     sublst.append("%0.1f" % aqdata["particles 100um"])
     lst.append(sublst)
-    time.sleep(1)
 
 
 col_names = ["Time","Temperature", "Gas","Humidity", "Pressure", "Altitude","pm10 standard", "pm25 standard","pm100 env"]
 df = pd.DataFrame(lst, columns = col_names)
-csv_data = df.to_csv('combined_data.csv', index = False)
+csv_data = df.to_csv(filename, index = False)
