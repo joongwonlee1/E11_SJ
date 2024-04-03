@@ -24,7 +24,7 @@ for i in range(10):
 
 col_names = ["Time","Temperature", "Gas","Humidity", "Pressure", "Altitude"]
 df = pd.DataFrame(lst, columns = col_names)
-csv_data = df.to_csv('weather_data.csv', index = False)
+csv_data = df.to_csv('weather_data_collect.csv', index = False)
 
 # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
@@ -122,7 +122,7 @@ for i in range(30):
 
 col_names = ["Time","pm10 standard", "pm25 standard","pm100 env"]
 df = pd.DataFrame(lst, columns = col_names)
-csv_data = df.to_csv('air_data.csv', index = False)
+csv_data = df.to_csv('air_data_collect.csv', index = False)
 
 import RPi.GPIO as GPIO
 import time
